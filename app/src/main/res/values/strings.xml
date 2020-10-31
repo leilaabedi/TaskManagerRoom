@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">MyTaskManager</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="task_title">Enter task title</string>
+    <string name="task_description">Enter task description</string>
+    <string name="text_login">login</string>
+    <string name="button_login">Log in</string>
+    <string name="text_sign_up">Sign up</string>
+    <string name="button_sign_up">Sign up</string>
+    <string name="text_recycler_view">The list Task is empty, please click on add button</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+
+    <string name="send_report">Send task report via</string>
+
+
+
+</resources>

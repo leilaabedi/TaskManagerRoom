@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".controller.fragment.TaskDetailFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgview_photo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@android:color/darker_gray"
+                android:cropToPadding="true"
+                android:scaleType="centerInside"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageButton
+                android:id="@+id/imgbtn_take_picture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_camera" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/task_text_view_title"
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="10dp"
+                android:padding="5dp"
+                android:text="@string/task_title"
+                android:textSize="12sp"
+                android:textStyle="bold"></TextView>
+
+            <EditText
+                android:id="@+id/task_edit_text_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="@string/task_title"
+                android:inputType="text"
+                android:maxLength="30"
+                android:padding="12dp"
+                android:paddingStart="8dp"
+                android:paddingLeft="8dp"
+                android:textSize="14sp"></EditText>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+
+        <TextView
+            android:id="@+id/task_text_view_details"
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="10dp"
+            android:padding="5dp"
+            android:text="@string/task_description"
+            android:textSize="12sp"
+            android:textStyle="bold"></TextView>
+
+        <EditText
+            android:id="@+id/task_edit_text_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:hint="@string/task_description"
+            android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
+            android:lines="3"
+            android:maxLines="3"
+            android:minLines="1"
+            android:padding="12dp"
+            android:scrollbars="vertical"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/task_button_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="11dp"
+            android:textAllCaps="false"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/task_button_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="11dp"
+            android:textAllCaps="false"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/task_checkbox_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="16dp"
+            android:text="State"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>
