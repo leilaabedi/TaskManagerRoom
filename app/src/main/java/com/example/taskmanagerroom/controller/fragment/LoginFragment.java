@@ -68,7 +68,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 if (validateUsername())
                     if (validatePassword()) {
-                        Intent intent = PagerActivity.newIntent(getActivity());
+                        Intent intent = PagerActivity.newIntent(getActivity(),mUser);
                         startActivity(intent);
                         getActivity().finish();
                     }

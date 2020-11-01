@@ -30,7 +30,7 @@ public interface UserDAO {
     @Query("SELECT * FROM userTable")
     List<User> getUsers();
 
-    @Query("SELECT * FROM userTable WHERE uuid=:inputId")
+    @Query("SELECT * FROM userTable WHERE userId=:inputId")
     User getUser(UUID inputId);
 
     @Query("SELECT * FROM userTable WHERE username LIKE :inputuser")

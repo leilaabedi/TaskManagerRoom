@@ -7,12 +7,14 @@
         android:icon="@drawable/ic_logout_user"
         android:title="Logout"
         app:showAsAction="never" />
+
     <item
         android:id="@+id/menu_search_task"
         android:title="Search Task"
         android:icon="@drawable/ic_menu_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|withText" />
+
 
     <item
         android:id="@+id/menu_remove_all"

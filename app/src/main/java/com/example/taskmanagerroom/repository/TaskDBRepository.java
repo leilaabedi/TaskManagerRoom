@@ -8,6 +8,7 @@ import com.example.taskmanagerroom.database.TaskDAO;
 import com.example.taskmanagerroom.database.TaskDataBase;
 import com.example.taskmanagerroom.model.State;
 import com.example.taskmanagerroom.model.Task;
+import com.example.taskmanagerroom.model.User;
 
 import java.io.File;
 import java.util.List;
@@ -95,6 +96,8 @@ public class TaskDBRepository implements IRepository {
 
         return mTaskDAO.gettypeTasks(result);
     }
+
+
 
     @Override
     public void addTaskToDo(Task task) {

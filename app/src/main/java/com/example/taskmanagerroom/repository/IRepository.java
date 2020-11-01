@@ -2,6 +2,7 @@ package com.example.taskmanagerroom.repository;
 
 import com.example.taskmanagerroom.model.State;
 import com.example.taskmanagerroom.model.Task;
+import com.example.taskmanagerroom.model.User;
 
 import java.io.File;
 import java.io.Serializable;
@@ -17,10 +18,12 @@ public interface IRepository extends Serializable {
     void removeSingleTask(Task task);
     void removeTasks();
     List<Task> getTasksList(State state);
+
     void addTaskToDo(Task task);
     void addTaskDone(Task task);
     void addTaskDoing(Task task);
     File getPhotoFile(Task task);
+
 
 
 }

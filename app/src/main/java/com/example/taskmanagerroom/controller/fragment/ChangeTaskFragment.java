@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -50,6 +51,8 @@ public class ChangeTaskFragment extends DialogFragment {
     public static final String TAG = "CDF";
     private Button mButtonReport;
 
+    private Callbacks mCallbacks;
+
 
     private ImageView mImageViewPhoto;
     private ImageButton mImageButtonTakePicture;
@@ -89,6 +92,17 @@ public class ChangeTaskFragment extends DialogFragment {
         args.putSerializable(ARGS_TASK_CHANGE, task);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Callbacks)
+            mCallbacks = (Callbacks) context;
+        else {
+            throw new ClassCastException(context.toString()
+                    + " must implement Callbacks");
+        }
     }
 
     @Override
@@ -160,6 +174,7 @@ public class ChangeTaskFragment extends DialogFragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mTask.setTaskTitle(charSequence.toString());
+                updateTask();
             }
 
             @Override
@@ -177,6 +192,7 @@ public class ChangeTaskFragment extends DialogFragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mTask.setTaskDescription(charSequence.toString());
+                updateTask();
             }
 
             @Override
@@ -225,21 +241,23 @@ public class ChangeTaskFragment extends DialogFragment {
                     mRadioButtonToDo.setChecked(true);
 
                     mTask.setTaskState(State.TODO);
-                    TaskDBRepository.getInstance(getActivity()).updateTask(mTask);
+                    updateTask();
+                    // TaskDBRepository.getInstance(getActivity()).updateTask(mTask);
 
                 } else if (checkedId == mRadioButtonDoing.getId()) {
                     mRadioButtonDoing.setChecked(true);
                     mTask.setTaskState(State.DOING);
-                    TaskDBRepository.getInstance(getActivity()).updateTask(mTask);
+                    updateTask();
+                    //TaskDBRepository.getInstance(getActivity()).updateTask(mTask);
 
                 } else if (checkedId == mRadioButtonDone.getId()) {
                     mRadioButtonDone.setChecked(true);
                     mTask.setTaskState(State.DONE);
-                    TaskDBRepository.getInstance(getActivity()).updateTask(mTask);
-
+                    //TaskDBRepository.getInstance(getActivity()).updateTask(mTask);
+                    updateTask();
                 }
 
-                updateEditUI(state);
+              //  updateEditUI(state);
 
 
             }
@@ -248,7 +266,7 @@ public class ChangeTaskFragment extends DialogFragment {
         mImageButtonTakePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("leila","before");
+                Log.i("leila", "before");
                 takePictureIntent();
             }
         });
@@ -272,7 +290,7 @@ public class ChangeTaskFragment extends DialogFragment {
 
         String taskDescription = mTask.getTaskDescription();
 
-        String report = title+"      "+dateString+"        "+taskDescription;
+        String report = title + "      " + dateString + "        " + taskDescription;
         return report;
     }
 
@@ -289,9 +307,6 @@ public class ChangeTaskFragment extends DialogFragment {
         if (sendIntent.resolveActivity(getActivity().getPackageManager()) != null)
             startActivity(shareIntent);
     }
-
-
-
 
 
     private void takePictureIntent() {
@@ -320,7 +335,7 @@ public class ChangeTaskFragment extends DialogFragment {
                         takePictureIntent,
                         PackageManager.MATCH_DEFAULT_ONLY);
 
-        for (ResolveInfo activity: activities) {
+        for (ResolveInfo activity : activities) {
             getActivity().grantUriPermission(
                     activity.activityInfo.packageName,
                     photoUri,
@@ -344,7 +359,6 @@ public class ChangeTaskFragment extends DialogFragment {
         Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getAbsolutePath(), getActivity());
         mImageViewPhoto.setImageBitmap(bitmap);
     }
-
 
 
     private void updateEditUI(State state) {
@@ -417,4 +431,45 @@ public class ChangeTaskFragment extends DialogFragment {
 
         fragment.onActivityResult(requestCode, resultCode, intent);
     }
+
+    public void onPause() {
+        super.onPause();
+        updateTask();
+
+        Log.d(TAG, "onPause");
+    }
+
+
+    private void updateTask() {
+        mRepository.updateTask(mTask);
+
+        Log.i("leila",mTask.getTaskState().toString());
+
+        //todo: anti pattern
+        //  mCallbacks.onTaskUpdated(mTask);
+
+        // TaskListFragment taskListFragment = (TaskListFragment) getActivity()
+        //        .getSupportFragmentManager()
+        //       .findFragmentById(R.id.fragment_container);
+
+        //taskListFragment.updateUI(mTask.getTaskState());
+
+      /*  if (getTargetFragment() instanceof TaskListFragment) {
+          //  ((TaskListFragment) getTargetFragment()).updateUI(mTask.getTaskState());
+
+            TaskListFragment taskListFragment = (TaskListFragment) getActivity()
+                   .getSupportFragmentManager()
+                   .findFragmentById(R.id.fragment_container);
+
+            taskListFragment.updateUI(mTask.getTaskState());
+
+        }
+
+       */
+    }
+
+    public interface Callbacks {
+        void onTaskUpdated(Task task);
+    }
+
 }

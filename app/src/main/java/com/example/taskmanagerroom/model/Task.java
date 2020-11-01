@@ -17,7 +17,7 @@ public class Task implements Serializable {
     @ColumnInfo(name = "id")
     private long primaryId;
 
-    @ColumnInfo(name = "uuid")
+    @ColumnInfo(name = "taskId")
     private UUID mTaskID;
     @ColumnInfo(name = "title")
     private String mTaskTitle;

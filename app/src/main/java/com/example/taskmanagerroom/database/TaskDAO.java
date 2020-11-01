@@ -38,7 +38,7 @@ public interface TaskDAO {
     @Query("SELECT * FROM taskTable")
     List<Task> getTasks();
 
-    @Query("SELECT * FROM taskTable WHERE uuid=:inputId")
+    @Query("SELECT * FROM taskTable WHERE taskId=:inputId")
     Task getSingleTask(UUID inputId);
 
 
