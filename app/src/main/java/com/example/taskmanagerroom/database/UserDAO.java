@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.taskmanagerroom.model.Task;
+
 import com.example.taskmanagerroom.model.User;
 
 import java.util.List;

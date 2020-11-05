@@ -13,6 +13,7 @@ import com.example.taskmanagerroom.model.State;
 import com.example.taskmanagerroom.model.Task;
 import com.example.taskmanagerroom.model.TaskUser;
 import com.example.taskmanagerroom.model.User;
+import com.example.taskmanagerroom.model.UserCount;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,6 +25,7 @@ public class TaskUserDBRepository implements Serializable {
 
     //    private SQLiteDatabase mDatabase;
     private TaskUserDAO mTaUsDAO;
+
 
     private Context mContext;
 
@@ -60,6 +62,10 @@ public class TaskUserDBRepository implements Serializable {
     public void insertTask(TaskUser taskUser) {
         mTaUsDAO.insertUser(taskUser);
 
+    }
+
+    public List<UserCount> getUserCount(){
+        return mTaUsDAO.getUserCount();
     }
 
 

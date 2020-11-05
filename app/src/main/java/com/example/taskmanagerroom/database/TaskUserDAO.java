@@ -8,6 +8,7 @@ import androidx.room.Update;
 
 import com.example.taskmanagerroom.model.TaskUser;
 import com.example.taskmanagerroom.model.User;
+import com.example.taskmanagerroom.model.UserCount;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,9 +37,8 @@ public interface TaskUserDAO {
     List<TaskUser> getUserTask(UUID inputId);
 
 
-
-
-
+    @Query("SELECT userId,count(*)  as count FROM TaskUserTable Group by userId")
+    List<UserCount> getUserCount();
 
 
 }

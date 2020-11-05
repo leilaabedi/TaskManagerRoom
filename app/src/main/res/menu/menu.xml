@@ -3,10 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_admin"
+        android:title="ManageUser"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_logout"
         android:icon="@drawable/ic_logout_user"
         android:title="Logout"
         app:showAsAction="never" />
+
+
 
     <item
         android:id="@+id/menu_search_task"
@@ -20,6 +28,7 @@
         android:id="@+id/menu_remove_all"
         android:title="Remove Tasks"
         android:icon="@drawable/ic_delete_all_tasks"
+
         android:iconTint="@color/design_default_color_error"
         app:showAsAction="ifRoom|withText"/>
 </menu>

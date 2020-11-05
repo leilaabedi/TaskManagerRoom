@@ -19,11 +19,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskmanagerroom.R;
 import com.example.taskmanagerroom.controller.activity.MainActivity;
+import com.example.taskmanagerroom.controller.activity.UserListActivity;
 import com.example.taskmanagerroom.model.State;
 import com.example.taskmanagerroom.model.Task;
 import com.example.taskmanagerroom.model.TaskUser;
@@ -44,9 +47,12 @@ public class TaskListFragment extends Fragment {
     public static final String ARGS_STATE_FROM_PAGER_ACTIVITY = "STATE_FROM_PAGER_ACTIVITY";
     public static final String ARGS_USER_FROM_PAGER_ACTIVITY = "USER_FROM_PAGER_ACTIVITY";
 
+    private static final String TAG_USER_LIST = "userListFragment";
+
 
     public static final int REQUEST_CODE_TASK_DETAIL_FRAGMENT = 10;
     public static final int REQUEST_CODE_CHANGE_TASK_FRAGMENT = 20;
+    public static final int REQUEST_CODE_USER_LIST = 50;
     public static final int RESULT_CODE_DELETE_TASK_SECOND = 100;
     public static final String EXTRA_TASK_DELETE_SECOND = "com.example.mytaskmanager.EXTRA_TASK_DELETE_SECOND";
 
@@ -125,11 +131,11 @@ public class TaskListFragment extends Fragment {
         //mTaskListFinal = mTaskDBRepository.getTasksList(mState);
         mTaskUserList = mTaskUserDBRepository.getUserTask(mUser.getId());
 
-        Log.i("leila",mUser.getUserName());
+        Log.i("leila", mUser.getUserName());
 
         for (Task task : mTaskList) {
             for (TaskUser taskUser : mTaskUserList) {
-                if (task.getTaskID().equals(taskUser.getTaskID()) ) {
+                if (task.getTaskID().equals(taskUser.getTaskID())) {
                     mTaskListFinal.add(task);
                 }
             }
@@ -278,9 +284,6 @@ public class TaskListFragment extends Fragment {
 
         public TaskAdapter(List<Task> tasks) {
             mTasks = tasks;
-            if (tasks != null)
-                mTasksSearch = new ArrayList<>(tasks);
-            notifyDataSetChanged();
         }
 
         @NonNull
@@ -308,48 +311,6 @@ public class TaskListFragment extends Fragment {
         }
 
 
-        public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence charSequence) {
-                    List<Task> filteredList = new ArrayList<>();
-
-                    if (charSequence.toString().isEmpty()) {
-                        filteredList.addAll(mTasksSearch);
-                    } else {
-                        for (Task task : mTasksSearch) {
-                            if (task.getTaskTitle().toLowerCase().trim()
-                                    .contains(charSequence.toString().toLowerCase().trim()) ||
-                                    task.getTaskDescription().toLowerCase().trim()
-                                            .contains(charSequence.toString().toLowerCase().trim()) ||
-                                    task.getTaskState().toString().trim()
-                                            .contains(charSequence.toString().toLowerCase().trim()) ||
-                                    task.getJustDate().toLowerCase().trim()
-                                            .contains(charSequence.toString().toLowerCase().trim()) ||
-                                    task.getJustTime().toLowerCase().trim()
-                                            .contains(charSequence.toString().toLowerCase().trim())) {
-                                filteredList.add(task);
-                            }
-                        }
-                    }
-                    FilterResults results = new FilterResults();
-                    results.values = filteredList;
-
-                    return results;
-                }
-
-                @Override
-                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                    if (mTasks != null)
-                        mTasks.clear();
-                    if (filterResults.values != null)
-                        mTasks.addAll((Collection<? extends Task>) filterResults.values);
-                    notifyDataSetChanged();
-                }
-            };
-        }
-
-
     }
 
 
@@ -363,7 +324,11 @@ public class TaskListFragment extends Fragment {
             Task task =
                     (Task) data.getSerializableExtra(TaskDetailFragment.EXTRA_TASK);
 
-            TaskUser taskUser=new TaskUser(task.getTaskID(),mUser.getId());
+            TaskUser taskUser = new TaskUser(task.getTaskID(), mUser.getId());
+
+            Log.i("info",mUser.getId().toString());
+            Log.i("info",task.getTaskID().toString());
+
 
             mTaskDBRepository.insertTask(task);
             taskUser.setId(mUser.getId());
@@ -418,20 +383,36 @@ public class TaskListFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu, menu);
 
+        MenuItem admin = menu.findItem(R.id.menu_admin);
 
-        MenuItem searchItem = menu.findItem(R.id.menu_search_task);
-        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        if (mUser.getUserName().equals("admin"))
+            admin.setVisible(true);
+
+        admin.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public boolean onMenuItemClick(MenuItem item) {
+
+                /*
+                UserListFragment userListFragment = UserListFragment.newInstance();
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack so the user can navigate back
+                transaction.replace(R.id.fragment_container, userListFragment);
+                transaction.addToBackStack(null);
+
+// Commit the transaction
+                transaction.commit();
+
+                 */
+
+                Intent intent = new Intent(getActivity(), UserListActivity.class);
+                startActivity(intent);
+
+
+                return true;
             }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mTaskAdapter.getFilter().filter(newText);
-                return false;
-            }
         });
 
 

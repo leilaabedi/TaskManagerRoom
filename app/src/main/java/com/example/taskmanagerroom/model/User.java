@@ -1,10 +1,13 @@
 package com.example.taskmanagerroom.model;
 
+import android.util.Log;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -23,18 +26,36 @@ public class User implements Serializable {
     @ColumnInfo(name = "memDate")
     private String mDate;
 
+    public User() {
+        this(UUID.randomUUID());
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM YYYY");
+        Date d = new Date();
+        mDate = sdf.format(d);
+        Log.i("date", mDate);
+
+    }
+
+
     public User(UUID id, String userName, String password) {
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM YYYY");
+        Date d = new Date();
         mId = id;
         mUserName = userName;
         mPassword = password;
-        mDate=new Date().toString();
+        mDate = sdf.format(d);
+        Log.i("date", mDate);
     }
 
     public User(String userName, String password) {
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM YYYY");
+        Date d = new Date();
         mId = UUID.randomUUID();
         mUserName = userName;
         mPassword = password;
-        mDate=new Date().toString();
+        mDate = sdf.format(d);
+
+        Log.i("date", mDate);
+
 
     }
 
@@ -47,14 +68,10 @@ public class User implements Serializable {
     }
 
 
-
     public User(UUID id) {
         mId = id;
     }
 
-    public User() {
-        this(UUID.randomUUID());
-    }
 
     //Getter & Setters
     public UUID getId() {
