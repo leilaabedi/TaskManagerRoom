@@ -22,10 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskmanagerroom.R;
 import com.example.taskmanagerroom.controller.activity.MainActivity;
 import com.example.taskmanagerroom.model.AdminReport;
-import com.example.taskmanagerroom.model.Task;
 import com.example.taskmanagerroom.model.User;
 import com.example.taskmanagerroom.model.UserCount;
-import com.example.taskmanagerroom.repository.TaskDBRepository;
 import com.example.taskmanagerroom.repository.TaskUserDBRepository;
 import com.example.taskmanagerroom.repository.UserDBRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -50,24 +48,15 @@ public class UserListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private UserTaskAdapter mUserTaskAdapter;
     private FloatingActionButton mAddTask;
-    private ImageView mEmptyImage, mDeleteTask, mEditTask;
+    private ImageView mEmptyImage, mDeleteUser, mEditTask;
     private TextView mEmptyText;
-
     private UserCount mUserCount = new UserCount();
     private User mUser = new User();
-
-
     private List<UserCount> mTaskListFinal = new ArrayList<>();
-
-    //private List<Task> mTaskList = new ArrayList<>();
     private List<User> mUserList = new ArrayList<>();
-
     private List<AdminReport> mAdminReportList = new ArrayList<>();
-
-
     private UserDBRepository mUserDBRepository;
     private TaskUserDBRepository mTaskUserDBRepository;
-    // private TaskDBRepository mTaskDBRepository;
 
 
     public UserListFragment() {
@@ -77,8 +66,6 @@ public class UserListFragment extends Fragment {
     public static UserListFragment newInstance() {
         UserListFragment fragment = new UserListFragment();
         Bundle args = new Bundle();
-        //args.putSerializable(ARGS_STATE_FROM_PAGER_ACTIVITY, state);
-        //args.putSerializable(ARGS_USER_FROM_PAGER_ACTIVITY, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,14 +73,7 @@ public class UserListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setHasOptionsMenu(true);
-
-        //mState = (State) getArguments().getSerializable(ARGS_STATE_FROM_PAGER_ACTIVITY);
-
-        //mUser = (User) getArguments().getSerializable(ARGS_USER_FROM_PAGER_ACTIVITY);
-
     }
 
     @Override
@@ -101,10 +81,8 @@ public class UserListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_list, container, false);
-
         findViews(view);
         initViews();
-        // setListeners();
         return view;
     }
 
@@ -120,39 +98,28 @@ public class UserListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mUserDBRepository = UserDBRepository.getInstance(getActivity());
         mTaskUserDBRepository = TaskUserDBRepository.getInstance(getActivity());
-
-        //   mTaskDBRepository=TaskDBRepository.getInstance(getActivity());
         findUserTask();
         updateUI(mAdminReportList);
     }
 
     public void findUserTask() {
         mAdminReportList.clear();
-
         mTaskListFinal = mTaskUserDBRepository.getUserCount();
-        //  mTaskList = mTaskDBRepository.getTasks();
         mUserList = mUserDBRepository.getUsers();
-
-        // Log.i("leila", mUser.getUserName());
-
         for (UserCount userCount : mTaskListFinal) {
             Log.i("user", userCount.getId().toString());
             Log.i("user", userCount.getCount().toString());
             for (User user : mUserList) {
                 Log.i("user", user.getId().toString());
                 Log.i("user", user.getUserName());
-                Log.i("user", user.getDate()+"  hello  ");
+                Log.i("user", user.getDate() + "  hello  ");
 
                 if (user.getId().equals(userCount.getId())) {
-
-
                     AdminReport temp = new AdminReport();
                     temp.setUserId(user.getId());
                     temp.setUsername(user.getUserName());
                     temp.setUserDate(user.getDate());
-                   // Log.i("user", temp.getUserDate());
                     temp.setCount(userCount.getCount());
-
                     mAdminReportList.add(temp);
                 }
             }
@@ -194,20 +161,20 @@ public class UserListFragment extends Fragment {
             mTextViewTitle = itemView.findViewById(R.id.user_item_title);
             mTextViewDate = itemView.findViewById(R.id.user_item_date);
             mTextViewCount = itemView.findViewById(R.id.user_task_count);
-            // mDeleteTask = itemView.findViewById(R.id.task_item_remove);
+            mDeleteUser = itemView.findViewById(R.id.task_item_remove);
 
-           /*
-            mDeleteTask.setOnClickListener(new View.OnClickListener() {
+
+            mDeleteUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                            .setTitle("Do You Want to Delete Task?!")
+                            .setTitle("Do You Want to Delete User?!")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    State state = mTask.getTaskState();
-                                    mTaskDBRepository.removeSingleTask(mTask);
-                                    updateUI(state);
+                                    mUserDBRepository.deleteUser(mAdminReport.getUserId());
+                                    findUserTask();
+                                    updateUI(mAdminReportList);
                                 }
                             })
                             .setNegativeButton("No", null);
@@ -217,7 +184,7 @@ public class UserListFragment extends Fragment {
                 }
             });
 
-            */
+
         }
 
         public void bindTask(AdminReport adminReport) {
@@ -226,13 +193,10 @@ public class UserListFragment extends Fragment {
             mTextViewTitle.setText(mAdminReport.getUsername());
             mTextViewDate.setText(mAdminReport.getUserDate());
             mTextViewCount.setText(mAdminReport.getCount().toString());
-
-
         }
     }
 
     private class UserTaskAdapter extends RecyclerView.Adapter<UserTaskHolder> {
-
         // private List<UserCount> mUserCounts;
         private List<AdminReport> mAdminReports;
 
@@ -270,81 +234,14 @@ public class UserListFragment extends Fragment {
                 return mAdminReports.size();
             return 0;
         }
-
-
     }
 
-    /*
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (data == null)
-                return;
-
-            if (requestCode == REQUEST_CODE_TASK_DETAIL_FRAGMENT) {
-
-                Task task =
-                        (Task) data.getSerializableExtra(TaskDetailFragment.EXTRA_TASK);
-
-                TaskUser taskUser = new TaskUser(task.getTaskID(), mUser.getId());
-
-                mTaskDBRepository.insertTask(task);
-                taskUser.setId(mUser.getId());
-                mTaskUserDBRepository.insertTask(taskUser);
-                updateUI(mState);
-            }
-
-            if (requestCode == REQUEST_CODE_CHANGE_TASK_FRAGMENT) {
-                Task task;
-                switch (resultCode) {
-                    case ChangeTaskFragment.RESULT_CODE_EDIT_TASK:
-                        task = (Task) data.getSerializableExtra(ChangeTaskFragment.EXTRA_TASK_CHANGE);
-                        mTaskDBRepository.updateTask(task);
-                        updateUI(task.getTaskState());
-
-                        break;
-                    case ChangeTaskFragment.RESULT_CODE_DELETE_TASK:
-                        task = (Task) data.getSerializableExtra(ChangeTaskFragment.EXTRA_TASK_DELETE);
-                        State state = task.getTaskState();
-                        mTaskDBRepository.removeSingleTask(task);
-                        updateUI(state);
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-
-        }
-
-        public void updateEditUI() {
-            if (mTaskAdapter != null)
-                mTaskAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-            updateEditUI();
-        }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-            updateEditUI();
-        }
-
-    */
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull final MenuInflater inflater) {
 
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu, menu);
-
-        MenuItem admin = menu.findItem(R.id.menu_admin);
-
-        //if (mUser.getUserName().equals("admin"))
-        //  admin.setVisible(true);
-
+//        MenuItem admin = menu.findItem(R.id.menu_admin);
 
         MenuItem logout = menu.findItem(R.id.menu_logout);
         logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -355,9 +252,7 @@ public class UserListFragment extends Fragment {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
                                 getActivity().startActivity(MainActivity.newIntent(getActivity()));
-
                             }
                         })
                         .setNegativeButton(android.R.string.cancel, null);

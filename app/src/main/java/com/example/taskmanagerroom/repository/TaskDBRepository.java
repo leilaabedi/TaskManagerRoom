@@ -75,8 +75,8 @@ public class TaskDBRepository implements IRepository {
     @Override
     public void removeTasks() {
         mTaskDAO.deleteTasks();
-
     }
+
 
     @Override
     public List<Task> getTasksList(State tempstate) {
@@ -90,9 +90,6 @@ public class TaskDBRepository implements IRepository {
 
         if (tempstate == State.TODO)
             result = "TODO";
-
-
-
 
         return mTaskDAO.gettypeTasks(result);
     }

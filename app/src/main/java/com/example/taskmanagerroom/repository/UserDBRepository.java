@@ -69,6 +69,19 @@ public class UserDBRepository implements Serializable {
         mUserDAO.insertUser(user);
     }
 
+    public void deleteUser(UUID uId){
+        List<User> users = getUsers();
+        User tempUser=new User();
+
+        for (int i = 0; i < users.size() ; i++) {
+            if (users.get(i).getId().equals(uId)){
+                tempUser=users.get(i);
+            }
+        }
+        mUserDAO.deleteUser(tempUser);
+
+    }
+
 
 
 

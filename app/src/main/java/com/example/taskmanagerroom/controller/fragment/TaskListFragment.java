@@ -90,14 +90,9 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setHasOptionsMenu(true);
-
         mState = (State) getArguments().getSerializable(ARGS_STATE_FROM_PAGER_ACTIVITY);
-
         mUser = (User) getArguments().getSerializable(ARGS_USER_FROM_PAGER_ACTIVITY);
-
     }
 
     @Override
@@ -105,12 +100,9 @@ public class TaskListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
-
         findViews(view);
         initViews();
         setListeners();
-
-
         return view;
     }
 
@@ -141,8 +133,13 @@ public class TaskListFragment extends Fragment {
             }
         }
 
+        if (mUser.getUserName().equals("admin")) {
+            mTaskListFinal.clear();
+            mTaskListFinal = mTaskList;
+        }
 
     }
+
 
     public void updateUI(State state) {
         if (mTaskDBRepository != null) {
@@ -320,16 +317,8 @@ public class TaskListFragment extends Fragment {
             return;
 
         if (requestCode == REQUEST_CODE_TASK_DETAIL_FRAGMENT) {
-
-            Task task =
-                    (Task) data.getSerializableExtra(TaskDetailFragment.EXTRA_TASK);
-
+            Task task = (Task) data.getSerializableExtra(TaskDetailFragment.EXTRA_TASK);
             TaskUser taskUser = new TaskUser(task.getTaskID(), mUser.getId());
-
-            Log.i("info",mUser.getId().toString());
-            Log.i("info",task.getTaskID().toString());
-
-
             mTaskDBRepository.insertTask(task);
             taskUser.setId(mUser.getId());
             mTaskUserDBRepository.insertTask(taskUser);
@@ -379,86 +368,68 @@ public class TaskListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull final MenuInflater inflater) {
-
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu, menu);
-
         MenuItem admin = menu.findItem(R.id.menu_admin);
-
-        if (mUser.getUserName().equals("admin"))
+        if (mUser.getUserName().equals("admin")) {
             admin.setVisible(true);
 
-        admin.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+            admin.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent intent = new Intent(getActivity(), UserListActivity.class);
+                    startActivity(intent);
 
-                /*
-                UserListFragment userListFragment = UserListFragment.newInstance();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    return true;
+                }
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.fragment_container, userListFragment);
-                transaction.addToBackStack(null);
-
-// Commit the transaction
-                transaction.commit();
-
-                 */
-
-                Intent intent = new Intent(getActivity(), UserListActivity.class);
-                startActivity(intent);
+            });
 
 
-                return true;
-            }
+            MenuItem logout = menu.findItem(R.id.menu_logout);
+            logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                            .setTitle("Do You Want To Exit?")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-        });
+                                    getActivity().startActivity(MainActivity.newIntent(getActivity()));
 
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null);
 
-        MenuItem logout = menu.findItem(R.id.menu_logout);
-        logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                        .setTitle("Do You Want To Exit?")
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return true;
+                }
+            });
 
-                                getActivity().startActivity(MainActivity.newIntent(getActivity()));
+            MenuItem deleteAll = menu.findItem(R.id.menu_remove_all);
+            deleteAll.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                            .setTitle("Do You Want To Delete All Tasks?")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mTaskDBRepository.removeTasks();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null);
 
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return true;
+                }
+            });
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return true;
-            }
-        });
+        }
 
-        MenuItem deleteAll = menu.findItem(R.id.menu_remove_all);
-        deleteAll.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                        .setTitle("Do You Want To Delete All Tasks?")
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mTaskDBRepository.removeTasks();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null);
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return true;
-            }
-        });
 
     }
-
-
 }
